@@ -1,0 +1,19 @@
+{% extends "layout.html" %} {% block title %} Login page {% endblock %} {% block body %}
+<br>
+
+<h1>🔐 Login Page</h1>
+
+<br>
+
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    {{ form.username }}
+    {{ form.password }}
+    {{ form.submit }}
+</form>
+
+<hr>
+<p>
+    If you don't have an account, you can register <a href="SIGNUP_GOOGLE_FORM">here</a>.
+</p>
+{% endblock %}

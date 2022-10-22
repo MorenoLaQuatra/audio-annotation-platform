@@ -1,0 +1,13 @@
+{% extends "layout.html" %} {% block title %} Audio Annotation Tool {% endblock %} {% block body %}
+<br><br>
+<h1>👋 Hi! Welcome to the audio annotation platform!</h1>
+<br>
+<h5>
+    Login to start annotating!
+</h5>
+
+<a href="{{url_for('login')}}" class="btn btn-primary">Login</a>
+
+<br>
+
+{% endblock %}
