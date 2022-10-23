@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# application specific folders and files that should not be tracked
+audio_files/

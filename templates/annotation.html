@@ -1,0 +1,143 @@
+{% extends "layout.html" %} {% block title %} Audio Annotation Tool {% endblock %} {% block body %}
+<br>
+
+<a href="{{url_for('dashboard')}}" class="btn btn-primary">📈 Dashboard</a>
+<a href="{{url_for('logout')}}" class="btn btn-primary">❌ Logout</a>
+
+
+<hr>
+<p><b>📊 Progress: </b>{{num_annotations}} / {{dataset_size}}</p>
+
+
+<p>ID:
+    <div id="id-sentence">{{utt_id}}</div>
+</p>
+
+<br>
+<p>Leggi la frase seguente</p>
+
+<h4 id="target-sentence">{{utt_text}}</h4>
+<br>
+<br>
+<div id="controls">
+    <button class="btn btn-success" id="startRecording">Start recording</button> &nbsp;&nbsp;
+    <button class="btn btn-danger" id="stopRecording" disabled>Stop recording</button>
+</div>
+
+
+
+
+<br>
+<br>
+<br>
+
+<div id="audio-div">
+
+</div>
+
+<br>
+<button class="btn btn-primary" type="button" onclick="sendData()" id="sendDataButton">Submit</button>
+
+<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+    navigator
+        .mediaDevices
+        .getUserMedia({
+            audio: true
+        })
+        .then(stream => {
+            handlerFunction(stream)
+        });
+
+    function handlerFunction(stream) {
+
+        var options = {
+            mimeType: 'audio/webm;codecs=opus'
+        }
+
+
+        rec = new MediaRecorder(stream, options);
+        rec.ondataavailable = e => {
+            audioChunks.push(e.data);
+            if (rec.state == "inactive") {
+                let blob = new Blob(audioChunks, {
+                    type: 'audio/webm'
+                });
+                var url = URL.createObjectURL(blob);
+
+                var div = document.getElementById('audio-div');
+
+                if (document.contains(document.getElementById("audio-container"))) {
+                    document.getElementById("audio-container").remove();
+                }
+
+                var container = document.createElement('audio');
+                container.setAttribute("id", "audio-container")
+                container.setAttribute("name", "recording")
+                container.controls = true
+
+                var source = document.createElement('source');
+                div.appendChild(container)
+                container.appendChild(source);
+
+                source.setAttribute('src', url);
+                source.setAttribute('type', 'audio/mpeg');
+
+                console.log({
+                    src: source.getAttribute('src'),
+                    type: source.getAttribute('type'),
+                });
+                //sendData(blob);
+            }
+        }
+    }
+
+    function sendData() {
+        sendDataButton.disabled = true;
+        let blob = new Blob(audioChunks, {
+            type: 'audio/webm'
+        });
+        var form = new FormData();
+        form.append('file', blob, 'file');
+        form.append('utt_id', document.getElementById("id-sentence").innerText);
+        console.log(blob)
+
+        //Chrome inspector shows that the post data includes a file and a title.
+        $.ajax({
+            type: 'POST',
+            url: '/submit',
+            data: form,
+            cache: false,
+            processData: false,
+            contentType: false
+        }).done(function(response) {
+            console.log(response);
+            startRecording.disabled = true;
+            stopRecording.disabled = true;
+            if (response.message == "Done") {
+                window.location.replace("/annotation");
+            } else {
+                alert("Error. Please refresh the page.")
+            }
+
+        });
+    }
+
+    startRecording.onclick = e => {
+        console.log('Recording is started..');
+        startRecording.disabled = true;
+        stopRecording.disabled = false;
+        audioChunks = [];
+        rec.start();
+    };
+
+    stopRecording.onclick = e => {
+        console.log("Recording is stopped.");
+        startRecording.disabled = false;
+        stopRecording.disabled = true;
+        rec.stop();
+    };
+</script>
+{% endblock %}
