@@ -24,7 +24,7 @@ python add_user.py --username <username> --password <password>
 python dataset_parsing.py --data_path <path_to_json_data> --table_name <name_of_table>
 
 # Run the server
-python app.py --port <port> --run_over_https --debug
+python app.py --port <port> --run_over_https --debug --table_name <name_of_table>
 ```
 
 ### Parameters
@@ -46,6 +46,7 @@ python app.py --port <port> --run_over_https --debug
 - `--run_over_https`: if set, the server runs over https
 - `--debug`: if set, the server runs in debug mode
 - `--audio_folder`: path to the folder that will contain the audio files after annotation
+- `--table_name`: name of the table in the database
 
 ## Annotations
 

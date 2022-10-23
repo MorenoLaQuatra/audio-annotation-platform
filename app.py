@@ -35,6 +35,7 @@ def parse_args():
     parser.add_argument("--audio_folder", type=str, default="audio_files/", help="Path to the audio files", required=False)
     parser.add_argument("--run_over_https", default=False, help="Run over https", required=False, action='store_true')
     parser.add_argument("--debug", default=False, help="Run in debug mode", required=False, action='store_true')
+    parser.add_argument("--table_name", type=str, default=None, help="Name of the table for storing the data", required=True)
     return parser.parse_args()
 
 args = parse_args()
@@ -82,7 +83,7 @@ class User(db.Model, UserMixin):
 
 # class for the database
 class AnnotationEntry(db.Model):
-    __tablename__ = 'superb'
+    __tablename__ = args.table_name
     id = db.Column(db.Integer, primary_key=True)
     partition = db.Column(db.String(50), unique=False, nullable=False)
     utt = db.Column(db.String(50), unique=False, nullable=False)
@@ -220,6 +221,6 @@ def submit():
 '''
 if __name__ == "__main__":
     if args.run_over_https:
-        app.run(port=args.port, debug=args.debug, ssl_context='adhoc')
+        app.run(port=args.port, debug=args.debug, ssl_context='adhoc', host="0.0.0.0")
     else:
-        app.run(debug=args.debug, port=args.port)
+        app.run(debug=args.debug, port=args.port, host="0.0.0.0")
