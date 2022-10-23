@@ -13,6 +13,7 @@ from tqdm import tqdm
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_path", type=str, default=None, help="Path to the data", required=True)
+    parser.add_argument("--table_name", type=str, default=None, help="Name of the table for storing the data", required=True)
     return parser.parse_args()
 
 args = parse_args()
@@ -26,13 +27,13 @@ app.config['SECRET_KEY'] = 'secret-key-goes-here'
 db = SQLAlchemy(app)
 
 # class for the database
-class SuperbExample(db.Model):
-    __tablename__ = 'superb'
+class AnnotationEntry(db.Model):
+    __tablename__ = args.table_name
     id = db.Column(db.Integer, primary_key=True)
     partition = db.Column(db.String(50), unique=False, nullable=False)
     utt = db.Column(db.String(50), unique=False, nullable=False)
     path = db.Column(db.String(50), unique=True, nullable=True)
-    speaker = db.Column(db.String(50), unique=False, nullable=True) # TODO: change to db.Integer
+    speaker = db.Column(db.Integer, unique=False, nullable=True) # TODO: change to db.Integer
 
 # create table
 with app.app_context():
@@ -47,6 +48,6 @@ with app.app_context():
         id = row['id']
         partition = row['partition']
         utt = row['utt']
-        example = SuperbExample(id=id, partition=partition, utt=utt)
+        example = AnnotationEntry(id=id, partition=partition, utt=utt)
         db.session.add(example)
         db.session.commit()

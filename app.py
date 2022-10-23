@@ -32,10 +32,12 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=12345, help="Port to run the server on", required=False)
-    parser.add_argument("--audio_folder", type=str, default="audio_files/", help="Path to the audio files", required=True)
+    parser.add_argument("--audio_folder", type=str, default="audio_files/", help="Path to the audio files", required=False)
+    parser.add_argument("--run_over_https", default=False, help="Run over https", required=False, action='store_true')
+    parser.add_argument("--debug", default=False, help="Run in debug mode", required=False, action='store_true')
     return parser.parse_args()
 
-ARGS = parse_args()
+args = parse_args()
 
 '''
 ---------------------------------------------------
@@ -79,13 +81,13 @@ class User(db.Model, UserMixin):
     # TODO: Add more fields here
 
 # class for the database
-class SuperbExample(db.Model):
+class AnnotationEntry(db.Model):
     __tablename__ = 'superb'
     id = db.Column(db.Integer, primary_key=True)
     partition = db.Column(db.String(50), unique=False, nullable=False)
     utt = db.Column(db.String(50), unique=False, nullable=False)
     path = db.Column(db.String(50), unique=True, nullable=True)
-    speaker = db.Column(db.String(50), unique=False, nullable=True) #TODO: change to db.Integer
+    speaker = db.Column(db.Integer, unique=False, nullable=True)
 
 '''
 class RegisterForm(FlaskForm):
@@ -145,7 +147,7 @@ def dashboard():
 
     # get the number of annotations the user has done
     # query the superb table for the number of rows with the speaker = user_id
-    num_annotations = SuperbExample.query.filter_by(speaker=user_id).count()
+    num_annotations = AnnotationEntry.query.filter_by(speaker=user_id).count()
 
     return render_template("dashboard.html", username=user_name, num_annotations=num_annotations)
 
@@ -158,11 +160,14 @@ def annotation():
     user_id = user.id
 
     # Get some data for statistics
-    num_annotations = SuperbExample.query.filter(SuperbExample.speaker!=None).count()
-    dataset_size = SuperbExample.query.count()
+    num_annotations = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None).count()
+    dataset_size = AnnotationEntry.query.count()
+
+    if num_annotations == dataset_size:
+        return render_template("done.html")
 
     # get the next utterance to annotate, random example not the first one
-    next_utt = random.choice(SuperbExample.query.filter_by(speaker=None).all())
+    next_utt = random.choice(AnnotationEntry.query.filter_by(speaker=None).all())
     
     utt_id = next_utt.id
     utt_text = next_utt.utt
@@ -176,6 +181,7 @@ def annotation():
         utt_text=utt_text
     )
 
+
 def convert_webm_to_wav(file, filename):
     command = ['ffmpeg', '-y', '-i', file, '-acodec', 'pcm_s16le', '-ac', '1', '-ar', '16000', filename]
     subprocess.run(command, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
@@ -187,8 +193,8 @@ def submit():
     audio_file = request.files.get("file")
     utt_id = request.form.get("utt_id")
 
-    webm_filename = f"{ARGS.audio_folder}/{utt_id}.webm"
-    wav_filename  = f"{ARGS.audio_folder}/{utt_id}.wav"
+    webm_filename = f"{args.audio_folder}/{utt_id}.webm"
+    wav_filename  = f"{args.audio_folder}/{utt_id}.wav"
     audio_file.save(webm_filename)
     convert_webm_to_wav(webm_filename, filename=wav_filename)
 
@@ -197,7 +203,7 @@ def submit():
     speaker_id = user.id
 
     # update the database
-    utt = SuperbExample.query.filter_by(id=utt_id).first()
+    utt = AnnotationEntry.query.filter_by(id=utt_id).first()
     utt.speaker = speaker_id
     utt.path = wav_filename
     db.session.commit()
@@ -213,4 +219,7 @@ def submit():
 ---------------------------------------------------
 '''
 if __name__ == "__main__":
-    app.run(debug=True, port=ARGS.port)
+    if args.run_over_https:
+        app.run(port=args.port, debug=args.debug, ssl_context='adhoc')
+    else:
+        app.run(debug=args.debug, port=args.port)
