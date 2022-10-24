@@ -33,7 +33,7 @@ class AnnotationEntry(db.Model):
     partition = db.Column(db.String(50), unique=False, nullable=False)
     utt = db.Column(db.String(50), unique=False, nullable=False)
     path = db.Column(db.String(50), unique=True, nullable=True)
-    speaker = db.Column(db.Integer, unique=False, nullable=True) # TODO: change to db.Integer
+    speaker = db.Column(db.Integer, unique=False, nullable=True)
 
 # create table
 with app.app_context():

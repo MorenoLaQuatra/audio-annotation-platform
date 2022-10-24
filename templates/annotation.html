@@ -37,6 +37,7 @@
 
 <br>
 <button class="btn btn-primary" type="button" onclick="sendData()" id="sendDataButton">Submit</button>
+<button class="btn btn-danger" type="button" onclick="cancelAudio()" id="sendDataButton">Cancel</button>
 
 <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -96,6 +97,18 @@
 
     function sendData() {
         sendDataButton.disabled = true;
+
+        if (typeof audioChunks === 'undefined') {
+            alert("You need to record something first!");
+            return;
+        }
+
+        if (audioChunks.length == 0) {
+            alert("You need to record something first!")
+            return
+        }
+            
+
         let blob = new Blob(audioChunks, {
             type: 'audio/webm'
         });
@@ -139,5 +152,14 @@
         stopRecording.disabled = true;
         rec.stop();
     };
+
+    function cancelAudio() {
+        element = document.getElementById("audio-container");
+        element.parentNode.removeChild(element);
+        startRecording.disabled = false;
+        stopRecording.disabled = true;
+        audioChunks = [];
+
+    }
 </script>
 {% endblock %}

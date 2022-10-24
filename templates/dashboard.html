@@ -1,12 +1,16 @@
 {% extends "layout.html" %} {% block title %} Audio Annotation Tool {% endblock %} {% block body %}
-<br><br>
-<h1>👋 Hi {{ username }}!</h1>
+<br>
+
+<a href="{{url_for('annotation')}}" class="btn btn-primary">🎤 Start annotating</a>
+<a href="{{url_for('logout')}}" class="btn btn-primary">❌ Logout</a>
 <hr>
+
+<h5>👋 Hi {{ username }}!</h5>
+<br>
 <p>Thanks for annotating with us!</p>
 <br>
 <p>You have annotated {{ num_annotations }} audio files.</p>
-<a href="{{url_for('annotation')}}" class="btn btn-primary">🎤 Start annotating</a>
-<a href="{{url_for('logout')}}" class="btn btn-danger">❌ Logout</a>
+
 
 <br>
 

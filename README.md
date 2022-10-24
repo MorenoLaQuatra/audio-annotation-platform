@@ -57,8 +57,8 @@ Each time a user annotates an audio file using her/his voice:
 The final table in the database will look like this:
 | id | partition | utt | path | speaker |
 |----|-----------|-----|------|---------|
-| 1  | train     | 1   | 1.wav | 1       |
-| 2  | train     | 2   | 2.wav | 2       |
+| 1  | train     | Text of the utterance   | 1.wav | 1       |
+| 2  | train     | Text of the utterance   | 2.wav | 2       |
 
 Herafter a description of the fields:
 - `id`: id of the entry in the original json file
