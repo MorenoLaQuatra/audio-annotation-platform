@@ -15,13 +15,13 @@ sudo apt install ffmpeg
 ## Usage
 ```bash
 # Initialize the database (only needs to be done once)
-python init_db.py
+python init_user.py
 
 # Add a user (only needs to be done each time a new user is added)
 python add_user.py --username <username> --password <password>
 
 # Parse json data (superb) and add it to the database
-python dataset_parsing.py --data_path <path_to_json_data> --table_name <name_of_table>
+python init_dataset.py --data_path <path_to_json_data> --table_name <name_of_table>
 
 # Run the server
 python app.py --port <port> --run_over_https --debug --table_name <name_of_table>
@@ -29,7 +29,7 @@ python app.py --port <port> --run_over_https --debug --table_name <name_of_table
 
 ### Parameters
 
-#### init_db.py
+#### init_user.py
 - No parameters
 
 #### add_user.py
@@ -37,7 +37,7 @@ python app.py --port <port> --run_over_https --debug --table_name <name_of_table
 - `--password`: password of the user
 - WIP: we are currently working on updating the fields of the user table to include more information about the user
 
-#### dataset_parsing.py
+#### init_dataset.py
 - `--data_path`: path to the json data
 - `--table_name`: name of the table in the database
 
@@ -75,3 +75,8 @@ The information about the user is stored in the `users` table:
 | 2  | user2    | BCrypted |
 
 The username and password are currently the only information stored in the table.
+
+
+# TODO:
+
+- Validation da fare con -1/+1 (pagina di validazione da fare)

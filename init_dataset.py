@@ -1,4 +1,4 @@
-# parse SUPERB data in json format and store it in a database
+# parse MASSIVE data in json format and store it in a database
 
 import argparse
 import json
@@ -34,20 +34,34 @@ class AnnotationEntry(db.Model):
     utt = db.Column(db.String(50), unique=False, nullable=False)
     path = db.Column(db.String(50), unique=True, nullable=True)
     speaker = db.Column(db.Integer, unique=False, nullable=True)
+    device = db.Column(db.String(50), unique=False, nullable=True)
+    environment = db.Column(db.String(50), unique=False, nullable=True)
+    verification_score = db.Column(db.Integer, unique=False, nullable=True)
 
 # create table
 with app.app_context():
     # remove superb table if it already exists
-    db.session.execute('DROP TABLE IF EXISTS superb')  
+
+    # ask user for confirmation to remove the table
+    print("Do you want to remove the table {}?".format(args.table_name))
+    print("Type 'yes' to confirm")
+    confirmation = input()
+    if confirmation == 'yes':
+        db.session.execute('DROP TABLE IF EXISTS superb')  
+        db.session.commit()
+        print(f"Table {args.table_name} removed")
+    else:
+        print(f"Table {args.table_name} not removed and dataset {args.data_path} not parsed")
+        print("Exiting...")
+        sys.exit()
     
     db.create_all()
-
 
     # insert data into table
     for index, row in tqdm(dataset.iterrows()):
         id = row['id']
         partition = row['partition']
         utt = row['utt']
-        example = AnnotationEntry(id=id, partition=partition, utt=utt)
+        example = AnnotationEntry(id=id, partition=partition, utt=utt, verification_score=0)
         db.session.add(example)
         db.session.commit()

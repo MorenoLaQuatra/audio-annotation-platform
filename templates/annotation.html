@@ -17,6 +17,15 @@
 <p>Leggi la frase seguente</p>
 
 <h4 id="target-sentence">{{utt_text}}</h4>
+
+<br>
+<br>
+
+<div id="audio-div">
+
+</div>
+
+
 <br>
 <br>
 <div id="controls">
@@ -24,16 +33,32 @@
     <button class="btn btn-danger" id="stopRecording" disabled>Stop recording</button>
 </div>
 
+<hr>
+<br>
 
+<select name="device" id="device" required>
+    <option {% if device is none %} selected {% endif %} value=""></option>
+    <option {% if device == 'computer' %} selected {% endif %} value="computer">Computer</option>
+    <option {% if device == 'headphones' %} selected {% endif %} value="headphones">Cuffie</option>
+    <option {% if device == 'phone' %} selected {% endif %} value="phone">Telefono</option>
+    <option {% if device == 'other' %} selected {% endif %} value="other">Altro</option>
+</select>
 
+<br>
+<br>
+
+<select name="environment" id="environment" required>
+    <option {% if environment is none %} selected {% endif %} value=""></option>
+    <option {% if environment == 'noisy' %} selected {% endif %} value="noisy">Molto Rumoroso</option>
+    <option {% if environment == 'quiet' %} selected {% endif %} value="quiet">Poco Rumoroso</option>
+    <option {% if environment == 'silent' %} selected {% endif %} value="silent">Silenzioso</option>
+    <option {% if environment == 'other' %} selected {% endif %} value="other">Altro</option>
+</select>
 
 <br>
 <br>
 <br>
 
-<div id="audio-div">
-
-</div>
 
 <br>
 <button class="btn btn-primary" type="button" onclick="sendData()" id="sendDataButton">Submit</button>
@@ -112,9 +137,26 @@
         let blob = new Blob(audioChunks, {
             type: 'audio/webm'
         });
+
+        // check if the user has selected a device
+        var device = document.getElementById("device").value;
+        if (device == "") {
+            alert("You need to select a device!");
+            return;
+        }
+
+        // check if the user has selected an environment
+        var environment = document.getElementById("environment").value;
+        if (environment == "") {
+            alert("You need to select an environment!");
+            return;
+        }
+
         var form = new FormData();
         form.append('file', blob, 'file');
         form.append('utt_id', document.getElementById("id-sentence").innerText);
+        form.append('device', document.getElementById("device").value);
+        form.append('environment', document.getElementById("environment").value);
         console.log(blob)
 
         //Chrome inspector shows that the post data includes a file and a title.

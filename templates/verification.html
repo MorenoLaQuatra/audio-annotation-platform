@@ -1,0 +1,94 @@
+{% extends "layout.html" %} {% block title %} Audio Annotation Tool {% endblock %} {% block body %}
+<br>
+
+<a href="{{url_for('dashboard')}}" class="btn btn-primary">📈 Dashboard</a>
+<a href="{{url_for('logout')}}" class="btn btn-primary">❌ Logout</a>
+
+
+<hr>
+
+
+<p>ID:
+    <div id="id-sentence">{{utt_id}}</div>
+</p>
+
+<br>
+<p>La frase corrispondente è la seguente: <b>{{utt_text}}</b> - (verifica attuale: {{prev_verification_score}})</p>
+
+<br>
+<br>
+
+<div id="audio-div">
+    <!-- Audio File for preview -->
+    <audio controls>
+        <source src="/{{utt_path}}" type="audio/wav">
+    </audio>
+</div>
+
+
+<br>
+<br>
+<div id="controls">
+    <button class="btn btn-success" id="positive-evaluation">Corretta</button> &nbsp;&nbsp;
+    <button class="btn btn-danger" id="negative-evaluation">Errata</button>
+</div>
+
+<hr>
+<br>
+
+
+<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+    
+    var positiveButton = document.getElementById('positive-evaluation');
+    var negativeButton = document.getElementById('negative-evaluation');
+    
+    positiveButton.addEventListener('click', function() {
+        var form = new FormData();
+        form.append('utt_id', '{{utt_id}}');
+        form.append('utt_text', '{{utt_text}}');
+        form.append('evaluation', 'positive');
+
+        sendVerificationData(form);
+    });
+
+    negativeButton.addEventListener('click', function() {
+        var form = new FormData();
+        
+        form.append('utt_id', '{{utt_id}}');
+        form.append('utt_text', '{{utt_text}}');
+        form.append('evaluation', 'negative');
+
+        sendVerificationData(form);
+
+    });
+
+    function sendVerificationData(form) {
+
+        // disable buttons
+        positiveButton.disabled = true;
+        negativeButton.disabled = true;
+
+        $.ajax({
+            type: 'POST',
+            url: '/verify',
+            data: form,
+            cache: false,
+            processData: false,
+            contentType: false
+        }).done(function(response) {
+            console.log(response);
+            if (response.message == "Done") {
+                window.location.replace("/verification");
+            } else {
+                alert("Error. Please refresh the page.")
+            }
+
+        });
+    }
+
+    
+</script>
+{% endblock %}
