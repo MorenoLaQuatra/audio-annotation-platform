@@ -27,6 +27,24 @@ python init_dataset.py --data_path <path_to_json_data> --table_name <name_of_tab
 python app.py --port <port> --run_over_https --debug --table_name <name_of_table>
 ```
 
+## Audio verification
+
+The project also implements a random verification page. Users can access a verification page where are asked to listen to a random audio file and verify if it is correct or not. The verification page is accessible at `https://<server_address>/verification`.
+
+There is no specific role for the verification page. Any user can access it. The verification page **can** be implemented to specific users in the future but it is not implemented yet!
+
+**How verification works**
+- Each annotation is initialized with a `verification_score` of 0.
+- When a user verifies an annotation, the `verification_score` she/he can choose between `correct` and `incorrect`.
+    - If the user chooses `correct`, the `verification_score` is increased by 1 ( +=1 ).
+    - If the user chooses `incorrect`, the `verification_score` is decreased by 1 ( -= 1).
+- The `verification_score` is used to determine if an annotation is correct or not at the end of the annotation process.
+    - If the `verification_score` is greater than 0, the annotation is considered **correct**.
+    - If the `verification_score` is less than 0, the annotation is considered **incorrect**.
+    - If the `verification_score` is equal to 0, the annotation is considered **unverified**.
+
+NB. There is no tracking of the user who verified an annotation. This is a feature that **can** be implemented in the future.
+
 ### Parameters
 
 #### init_user.py
@@ -75,8 +93,3 @@ The information about the user is stored in the `users` table:
 | 2  | user2    | BCrypted |
 
 The username and password are currently the only information stored in the table.
-
-
-# TODO:
-
-- Validation da fare con -1/+1 (pagina di validazione da fare)
