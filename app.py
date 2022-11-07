@@ -46,8 +46,7 @@ args = parse_args()
 ---------------------------------------------------
 '''
 
-app = Flask(__name__, static_url_path='/audio_files', static_folder='audio_files')
-app._static_folder = ''
+app = Flask(__name__, static_url_path='/audio_files/', static_folder='audio_files/')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'secret-key-goes-here'
 db = SQLAlchemy(app)
