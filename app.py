@@ -19,6 +19,8 @@ from wtforms.validators import InputRequired, Length, ValidationError
 
 from flask_bcrypt import Bcrypt
 
+from datetime import datetime
+
 
 
 '''
@@ -35,7 +37,11 @@ def parse_args():
     parser.add_argument("--audio_folder", type=str, default="audio_files/", help="Path to the audio files", required=False)
     parser.add_argument("--run_over_https", default=False, help="Run over https", required=False, action='store_true')
     parser.add_argument("--debug", default=False, help="Run in debug mode", required=False, action='store_true')
-    parser.add_argument("--table_name", type=str, default=None, help="Name of the table for storing the data", required=False)
+
+    parser.add_argument("--users_table_name", type=str, default="users", help="Name of the table containing the users", required=False)
+    parser.add_argument("--dataset_table_name", type=str, default="superb", help="Name of the table for storing the data", required=False)
+    parser.add_argument("--verification_table_name", type=str, default="verifications", help="Name of the table containing the verifications", required=False)
+    parser.add_argument("--database_name", type=str, default="database", help="Name of the database", required=False)
     return parser.parse_args()
 
 args = parse_args()
@@ -47,7 +53,7 @@ args = parse_args()
 '''
 
 app = Flask(__name__, static_url_path='/audio_files/', static_folder='audio_files/')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{args.database_name}.db'
 app.config['SECRET_KEY'] = 'secret-key-goes-here'
 db = SQLAlchemy(app)
 
@@ -76,13 +82,14 @@ class User(db.Model, UserMixin):
     '''
     User class for flask-login
     '''
+    __tablename__ = args.users_table_name
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
 
 # class for the database
 class AnnotationEntry(db.Model):
-    __tablename__ = args.table_name
+    __tablename__ = args.dataset_table_name
     id = db.Column(db.Integer, primary_key=True)
     partition = db.Column(db.String(50), unique=False, nullable=False)
     utt = db.Column(db.String(50), unique=False, nullable=False)
@@ -91,6 +98,17 @@ class AnnotationEntry(db.Model):
     device = db.Column(db.String(50), unique=False, nullable=True)
     environment = db.Column(db.String(50), unique=False, nullable=True)
     verification_score = db.Column(db.Integer, unique=False, nullable=True)
+    annotation_timestamp = db.Column(db.String(50), unique=False, nullable=True)
+
+class VerificationEntry(db.Model):
+    __tablename__ = args.verification_table_name
+    id = db.Column(db.Integer, primary_key=True)
+    utt_id = db.Column(db.Integer, unique=False, nullable=False)
+    verifier_id = db.Column(db.Integer, unique=False, nullable=False)
+    score = db.Column(db.Integer, unique=False, nullable=False)
+    verification_timestamp = db.Column(db.String(50), unique=False, nullable=False)
+
+# ADD TABLE FOR VERIFICATION LOG
 
 '''
 class RegisterForm(FlaskForm):
@@ -127,7 +145,6 @@ def login():
     '''
     Login route for flask-login
     '''
-
     form = LoginForm()
     if form.validate_on_submit():
         user_object = User.query.filter_by(username=form.username.data).first()
@@ -236,6 +253,7 @@ def submit():
     utt.path = wav_filename
     utt.device = device
     utt.environment = environment
+    utt.annotation_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     db.session.commit()
 
     data = {'message': 'Done', 'code': 'SUCCESS'}
@@ -262,7 +280,7 @@ def verification():
     user_id = user.id
 
     # Get random utterance to verify
-    possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None).all()
+    possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None and AnnotationEntry.verification_score == 0).all()
 
     if len(possible_utterances) == 0:
         return render_template("done.html")
@@ -289,15 +307,31 @@ def verify():
     This function is called when the user submits a verification.
     It stores the information on the database updating the corresponding entry.
     '''
+
+    user = User.query.filter_by(username=current_user.username).first()
+    user_name = user.username
+    user_id = user.id
+
     utt_id = request.form.get("utt_id")
     evaluation = request.form.get("evaluation")
 
     # update the database
     utt = AnnotationEntry.query.filter_by(id=utt_id).first()
+
     if evaluation == "positive":
         utt.verification_score += 1
     else:
         utt.verification_score -= 1
+
+    # insert entry in the verification table
+    verification_entry = VerificationEntry(
+        utt_id = utt_id,
+        verifier_id = user_id,
+        score = 1 if evaluation == "positive" else -1,
+        verification_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    )
+
+    db.session.add(verification_entry)
 
     db.session.commit()
 

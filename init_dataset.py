@@ -13,7 +13,10 @@ from tqdm import tqdm
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_path", type=str, default=None, help="Path to the data", required=True)
-    parser.add_argument("--table_name", type=str, default=None, help="Name of the table for storing the data", required=True)
+    parser.add_argument("--users_table_name", type=str, default="users", help="Name of the table for storing the data", required=True)
+    parser.add_argument("--dataset_table_name", type=str, default="superb", help="Name of the table for storing the data", required=True)
+    parser.add_argument("--verification_table_name", type=str, default="verifications", help="Name of the table for storing the data", required=True)
+    parser.add_argument("--database_name", type=str, default="database", help="Name of the table for storing the data", required=True)
     return parser.parse_args()
 
 args = parse_args()
@@ -22,13 +25,22 @@ args = parse_args()
 dataset = pd.read_json(path_or_buf=args.data_path, lines=True)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{args.database_name}.db'
 app.config['SECRET_KEY'] = 'secret-key-goes-here'
 db = SQLAlchemy(app)
 
+class User(db.Model, UserMixin):
+    '''
+    User class for flask-login
+    '''
+    __tablename__ = args.users_table_name
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(80), nullable=False)
+
 # class for the database
 class AnnotationEntry(db.Model):
-    __tablename__ = args.table_name
+    __tablename__ = args.dataset_table_name
     id = db.Column(db.Integer, primary_key=True)
     partition = db.Column(db.String(50), unique=False, nullable=False)
     utt = db.Column(db.String(50), unique=False, nullable=False)
@@ -37,23 +49,31 @@ class AnnotationEntry(db.Model):
     device = db.Column(db.String(50), unique=False, nullable=True)
     environment = db.Column(db.String(50), unique=False, nullable=True)
     verification_score = db.Column(db.Integer, unique=False, nullable=True)
+    annotation_timestamp = db.Column(db.String(50), unique=False, nullable=True)
+
+class VerificationEntry(db.Model):
+    __tablename__ = args.verification_table_name
+    id = db.Column(db.Integer, primary_key=True)
+    utt_id = db.Column(db.Integer, unique=False, nullable=False)
+    verifier_id = db.Column(db.Integer, unique=False, nullable=False)
+    score = db.Column(db.Integer, unique=False, nullable=False)
+    verification_timestamp = db.Column(db.String(50), unique=False, nullable=False)
 
 # create table
 with app.app_context():
-    # remove superb table if it already exists
 
-    # ask user for confirmation to remove the table
-    print("Do you want to remove the table {}?".format(args.table_name))
-    print("Type 'yes' to confirm")
-    confirmation = input()
-    if confirmation == 'yes':
-        db.session.execute('DROP TABLE IF EXISTS superb')  
-        db.session.commit()
-        print(f"Table {args.table_name} removed")
-    else:
-        print(f"Table {args.table_name} not removed and dataset {args.data_path} not parsed")
-        print("Exiting...")
-        sys.exit()
+    for table_name in [args.dataset_table_name, args.users_table_name, args.verification_table_name]:
+        print("Do you want to remove the table {}?".format(args.table_name))
+        print("Type 'yes' to confirm")
+        confirmation = input()
+        if confirmation == 'yes':
+            db.session.execute(f'DROP TABLE IF EXISTS {table_name};')  
+            db.session.commit()
+            print(f"Table {args.table_name} removed")
+        else:
+            print(f"Table {args.table_name} not removed and dataset {args.data_path} not parsed")
+            print("Exiting...")
+            sys.exit()
     
     db.create_all()
 

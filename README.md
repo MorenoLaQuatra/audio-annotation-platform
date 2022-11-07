@@ -21,7 +21,7 @@ python init_user.py
 python add_user.py --username <username> --password <password>
 
 # Parse json data (superb) and add it to the database
-python init_dataset.py --data_path <path_to_json_data> --table_name <name_of_table>
+python init_dataset.py --data_path <path_to_json_data> --dataset_name <name_of_dataset> --verification_table_name <name_of_verification_table> --users_table_name <name_of_users_table> --dataset_table_name <name_of_dataset_table>
 
 # Run the server
 python app.py --port <port> --run_over_https --debug --table_name <name_of_table>
@@ -47,24 +47,27 @@ NB. There is no tracking of the user who verified an annotation. This is a featu
 
 ### Parameters
 
-#### init_user.py
-- No parameters
+#### init_dataset.py
+- `--data_path`: path to the json data
+- `--database_name`: name of the database (default: `database`)
+- `--verification_table_name`: name of the table containing the verification logs (default: `verifications`)
+- `--users_table_name`: name of the table containing the users (default: `users`)
+- `--dataset_table_name`: name of the table containing the dataset and annotations (default: `superb`)
 
 #### add_user.py
 - `--username`: username of the user
 - `--password`: password of the user
 - WIP: we are currently working on updating the fields of the user table to include more information about the user
 
-#### init_dataset.py
-- `--data_path`: path to the json data
-- `--table_name`: name of the table in the database
-
 #### app.py
 - `--port`: port on which the server runs
 - `--run_over_https`: if set, the server runs over https
 - `--debug`: if set, the server runs in debug mode
 - `--audio_folder`: path to the folder that will contain the audio files after annotation
-- `--table_name`: name of the table in the database
+- `--database_name`: name of the database (default: `database`)
+- `--verification_table_name`: name of the table containing the verification logs (default: `verifications`)
+- `--users_table_name`: name of the table containing the users (default: `users`)
+- `--dataset_table_name`: name of the table containing the dataset and annotations (default: `superb`)
 
 ## Annotations
 
@@ -73,10 +76,10 @@ Each time a user annotates an audio file using her/his voice:
 - The audio file is converted from webm to wav and both formats are stored in the folder specified by the `--audio_folder` parameter
 
 The final table in the database will look like this:
-| id | partition | utt | path | speaker | verification_score |
-|----|-----------|-----|------|---------| -------------------|
-| 1  | train     | Text of the utterance   | 1.wav | 1       | 0 |
-| 2  | train     | Text of the utterance   | 2.wav | 2       | 0 |
+| id | partition | utt | path | speaker | verification_score | timestamp |
+|----|-----------|-----|------|---------| -------------------| ----------|
+| 1  | train     | Text of the utterance   | 1.wav | 1       | 0 | 2022-09-01 12:00:00 |
+| 2  | train     | Text of the utterance   | 2.wav | 2       | 0 | 2022-09-01 12:00:00 |
 
 Herafter a description of the fields:
 - `id`: id of the entry in the original json file
