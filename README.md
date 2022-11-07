@@ -73,10 +73,10 @@ Each time a user annotates an audio file using her/his voice:
 - The audio file is converted from webm to wav and both formats are stored in the folder specified by the `--audio_folder` parameter
 
 The final table in the database will look like this:
-| id | partition | utt | path | speaker |
-|----|-----------|-----|------|---------|
-| 1  | train     | Text of the utterance   | 1.wav | 1       |
-| 2  | train     | Text of the utterance   | 2.wav | 2       |
+| id | partition | utt | path | speaker | verification_score |
+|----|-----------|-----|------|---------| -------------------|
+| 1  | train     | Text of the utterance   | 1.wav | 1       | 0 |
+| 2  | train     | Text of the utterance   | 2.wav | 2       | 0 |
 
 Herafter a description of the fields:
 - `id`: id of the entry in the original json file
