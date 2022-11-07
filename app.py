@@ -280,9 +280,13 @@ def verification():
     user_id = user.id
 
     # Get random utterance to verify
-    possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None and AnnotationEntry.verification_score == 0).all()
+    possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None, AnnotationEntry.verification_score == 0).all()
+    if len(possible_utterances) == 0:
+        # if no utterance is "not verified" or with a score of 0, then choose a random one
+        possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None).all()
 
     if len(possible_utterances) == 0:
+        # if no utterance available, then goes to the done page
         return render_template("done.html")
 
     next_utt = random.choice(possible_utterances)

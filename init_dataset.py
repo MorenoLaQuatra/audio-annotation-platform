@@ -7,6 +7,7 @@ import sys
 from flask_sqlalchemy import SQLAlchemy
 import pandas as pd
 from flask import Flask
+from flask_login import UserMixin
 
 from tqdm import tqdm
 
@@ -63,15 +64,15 @@ class VerificationEntry(db.Model):
 with app.app_context():
 
     for table_name in [args.dataset_table_name, args.users_table_name, args.verification_table_name]:
-        print("Do you want to remove the table {}?".format(args.table_name))
+        print("Do you want to remove the table {}?".format(table_name))
         print("Type 'yes' to confirm")
         confirmation = input()
         if confirmation == 'yes':
             db.session.execute(f'DROP TABLE IF EXISTS {table_name};')  
             db.session.commit()
-            print(f"Table {args.table_name} removed")
+            print(f"Table {table_name} removed")
         else:
-            print(f"Table {args.table_name} not removed and dataset {args.data_path} not parsed")
+            print(f"Table {table_name} not removed and dataset {args.data_path} not parsed")
             print("Exiting...")
             sys.exit()
     

@@ -9,6 +9,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--username", type=str, default=None, help="Username for the database", required=True)
     parser.add_argument("--password", type=str, default=None, help="Password for the database", required=True)
+    parser.add_argument("--users_table_name", type=str, default="users", help="Name of the table for storing the data", required=False)
     return parser.parse_args()
 
 args = parse_args()
@@ -22,6 +23,7 @@ class User(db.Model, UserMixin):
     '''
     User class for flask-login
     '''
+    __tablename__ = args.users_table_name
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)

@@ -21,10 +21,10 @@ python init_user.py
 python add_user.py --username <username> --password <password>
 
 # Parse json data (superb) and add it to the database
-python init_dataset.py --data_path <path_to_json_data> --dataset_name <name_of_dataset> --verification_table_name <name_of_verification_table> --users_table_name <name_of_users_table> --dataset_table_name <name_of_dataset_table>
+python init_dataset.py --data_path <path_to_json_data> --database_name <name_of_database> --verification_table_name <name_of_verification_table> --users_table_name <name_of_users_table> --dataset_table_name <name_of_dataset_table>
 
 # Run the server
-python app.py --port <port> --run_over_https --debug --table_name <name_of_table>
+python app.py --port <port> --run_over_https --debug --database_name <name_of_database> --verification_table_name <name_of_verification_table> --users_table_name <name_of_users_table> --dataset_table_name <name_of_dataset_table>
 ```
 
 ## Audio verification
