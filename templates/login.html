@@ -1,9 +1,12 @@
 {% extends "layout.html" %} {% block title %} Login page {% endblock %} {% block body %}
+<!-- <br>
+
+<h1>🔐 Login </h1>
+
 <br>
 
-<h1>🔐 Pagina di Login </h1>
-
-<br>
+<h3>Inserisci qui username e password per accedere alla piattaforma</h3>
+<br><br>
 
 <form method="POST" action="">
     {{ form.hidden_tag() }}
@@ -12,8 +15,73 @@
     {{ form.submit }}
 </form>
 
+<br><br>
+
 <hr>
 <p>
     Se non hai ancora un account, puoi registrarti <a href="SIGNUP_GOOGLE_FORM">qui</a>.
-</p>
+</p> -->
+
+<section class="vh-100">
+  <div class="container-fluid h-custom">
+
+    <br><br>
+    <h1 class="text-center fw-bold">Benvenut* nella nostra piattaforma di annotazione! </h1>
+    <br><br>
+
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+          class="img-fluid" alt="Sample image">
+      </div>
+
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+
+        <h3 class="text-center fw-bold">Inserisci username e password </h3>
+
+        <form method="POST" action="">
+        {{ form.hidden_tag() }}
+
+          <!-- Email input -->          
+          <div class="form-control-lg">
+            <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+            {{ form.username }}
+          </div>
+
+          <!-- Password input -->
+          <div class="form-control-lg">
+            <!-- <i class="fas fa-lock fa-lg me-3 fa-fw"></i> -->
+            {{ form.password }}
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <a href="#!" class="text-body">Password dimenticata?</a>
+          </div>
+
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <button class="btn btn-primary btn-lg btn-block" style="background-color: #3b5998" 
+              type="submit">Login</button>
+
+              <!-- <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                {{ form.submit }}
+              </div> -->
+            <p class="small fw-bold mt-2 pt-1 mb-0">Non hai un account? <a href="SIGNUP_GOOGLE_FORM"
+                class="link-danger"> Regisrati qui </a></p>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div
+    class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+    <div class="text-white mb-3 mb-md-0">
+      Copyright © 2020. All rights reserved.
+    </div>
+  </div> -->
+
+</section>
+
+
 {% endblock %}
