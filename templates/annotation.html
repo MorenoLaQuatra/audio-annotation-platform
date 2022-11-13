@@ -2,22 +2,26 @@
 
 <div class="container-fluid" style="background-image: linear-gradient(#57AFFA, #D8ECFD); height: 100%">
 
+    <div class="text-center">
+        <img src="https://raw.githubusercontent.com/MorenoLaQuatra/audio-annotation-platform/main/images/RiTA_logo.png?token=GHSAT0AAAAAABRX5YQ4V5GX33IHR6DG2EACY3RNHQQ" 
+        class="img-fluid" alt="RiTA Logo" height="150" width="150">
+    </div>
+
     <br>
 
-    <a href="{{url_for('dashboard')}}" class="btn btn-info">📈 Crushcotto</a>
-    <a href="{{url_for('logout')}}" class="btn btn-warning">❌ Logout</a>
-
+    <div class="d-flex justify-content-between">
+        <a href="{{url_for('dashboard')}}" class="btn btn-info">📈 Torna alla homepage</a>
+        <a href="{{url_for('logout')}}" class="btn btn-warning">❌ Effettua il Logout</a>
+    </div>
 
     <hr>
+    
     <p><b>📊 Avanzamento annotazioni: </b>{{num_annotations}} / {{dataset_size}}</p>
 
-
-    <p>
-        <div id="id-sentence">ID: {{utt_id}}</div>
-    </p>
+    <p><div id="id-sentence">ID della frase corrente: {{utt_id}}</div></p>
 
     <br>
-    <p>Leggi la seguente frase:</p>
+    <p>Leggi la seguente frase (dando la giusta intonazione):</p>
 
     <h4 id="target-sentence">{{utt_text}}</h4>
 
@@ -25,14 +29,13 @@
 
     <div id="audio-div"></div>
 
-
     <br>
+
     <div id="controls">
         <button class="btn btn-success" id="startRecording">Inizia a registrare</button> &nbsp;&nbsp;
         <button class="btn btn-danger" id="stopRecording" disabled>Interrompi la registrazione</button>
     </div>
 
-    <hr>
     <br>
 
     <p>Seleziona il tipo di dispositivo che stai usando:</p>
@@ -44,8 +47,7 @@
         <option {% if device == 'other' %} selected {% endif %} value="other">Altro</option>
     </select>
 
-    <br>
-    <br>
+    <br><br>
 
     <p>Descrivi il tipo di ambiente in cui stai registrando:</p>
     <select name="environment" id="environment" required>
@@ -56,18 +58,19 @@
         <option {% if environment == 'other' %} selected {% endif %} value="other">Altro</option>
     </select>
 
-    <br>
-    <br>
-
+    <br><br>
 
     <br>
-    <button class="btn btn-success" type="button" onclick="sendData()" id="sendDataButton">Invia</button>
+    <button class="btn btn-success" type="button" onclick="sendData()" id="sendDataButton">Conferma e invia</button>
     <button class="btn btn-danger" type="button" onclick="cancelAudio()" id="sendDataButton">Annulla</button>
 
+    <br><br>
+
     <br>
-    <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+    <div 
+        class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-2 px-2 px-xl-3 bg-primary">
         <div class="text-white mb-3 mb-md-0">
-          Copyright © 2020. All rights reserved.
+          Copyright © 2022. Tutti i diritti sono riservati.
         </div>
     </div>
 
