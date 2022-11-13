@@ -1,70 +1,80 @@
 {% extends "layout.html" %} {% block title %} Audio Annotation Tool {% endblock %} {% block body %}
-<br>
 
-<a href="{{url_for('dashboard')}}" class="btn btn-primary">📈 Crushcotto</a>
-<a href="{{url_for('logout')}}" class="btn btn-primary">❌ Logout</a>
+<div class="container-fluid" style="background-image: linear-gradient(#57AFFA, #D8ECFD); height: 100%">
+
+    <br>
+
+    <a href="{{url_for('dashboard')}}" class="btn btn-info">📈 Crushcotto</a>
+    <a href="{{url_for('logout')}}" class="btn btn-warning">❌ Logout</a>
 
 
-<hr>
-<p><b>📊 Progress: </b>{{num_annotations}} / {{dataset_size}}</p>
+    <hr>
+    <p><b>📊 Avanzamento annotazioni: </b>{{num_annotations}} / {{dataset_size}}</p>
 
 
-<p>ID:
-    <div id="id-sentence">{{utt_id}}</div>
-</p>
+    <p>
+        <div id="id-sentence">ID: {{utt_id}}</div>
+    </p>
 
-<br>
-<p>Leggi la seguente frase:</p>
+    <br>
+    <p>Leggi la seguente frase:</p>
 
-<h4 id="target-sentence">{{utt_text}}</h4>
+    <h4 id="target-sentence">{{utt_text}}</h4>
 
-<br>
-<br>
+    <br>
 
-<div id="audio-div">
+    <div id="audio-div"></div>
+
+
+    <br>
+    <div id="controls">
+        <button class="btn btn-success" id="startRecording">Inizia a registrare</button> &nbsp;&nbsp;
+        <button class="btn btn-danger" id="stopRecording" disabled>Interrompi la registrazione</button>
+    </div>
+
+    <hr>
+    <br>
+
+    <p>Seleziona il tipo di dispositivo che stai usando:</p>
+    <select name="device" id="device" required>
+        <option {% if device is none %} selected {% endif %} value=""></option>
+        <option {% if device == 'computer' %} selected {% endif %} value="computer">Computer</option>
+        <option {% if device == 'headphones' %} selected {% endif %} value="headphones">Cuffie</option>
+        <option {% if device == 'phone' %} selected {% endif %} value="phone">Telefono</option>
+        <option {% if device == 'other' %} selected {% endif %} value="other">Altro</option>
+    </select>
+
+    <br>
+    <br>
+
+    <p>Descrivi il tipo di ambiente in cui stai registrando:</p>
+    <select name="environment" id="environment" required>
+        <option {% if environment is none %} selected {% endif %} value=""></option>
+        <option {% if environment == 'noisy' %} selected {% endif %} value="noisy">Molto Rumoroso</option>
+        <option {% if environment == 'quiet' %} selected {% endif %} value="quiet">Poco Rumoroso</option>
+        <option {% if environment == 'silent' %} selected {% endif %} value="silent">Silenzioso</option>
+        <option {% if environment == 'other' %} selected {% endif %} value="other">Altro</option>
+    </select>
+
+    <br>
+    <br>
+
+
+    <br>
+    <button class="btn btn-success" type="button" onclick="sendData()" id="sendDataButton">Invia</button>
+    <button class="btn btn-danger" type="button" onclick="cancelAudio()" id="sendDataButton">Annulla</button>
+
+    <br>
+    <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+        <div class="text-white mb-3 mb-md-0">
+          Copyright © 2020. All rights reserved.
+        </div>
+    </div>
 
 </div>
 
-
-<br>
-<br>
-<div id="controls">
-    <button class="btn btn-success" id="startRecording">Inizia a registrare</button> &nbsp;&nbsp;
-    <button class="btn btn-danger" id="stopRecording" disabled>Stoppa la registrazione</button>
-</div>
-
-<hr>
-<br>
-
-<select name="device" id="device" required>
-    <option {% if device is none %} selected {% endif %} value=""></option>
-    <option {% if device == 'computer' %} selected {% endif %} value="computer">Computer</option>
-    <option {% if device == 'headphones' %} selected {% endif %} value="headphones">Cuffie</option>
-    <option {% if device == 'phone' %} selected {% endif %} value="phone">Telefono</option>
-    <option {% if device == 'other' %} selected {% endif %} value="other">Altro</option>
-</select>
-
-<br>
-<br>
-
-<select name="environment" id="environment" required>
-    <option {% if environment is none %} selected {% endif %} value=""></option>
-    <option {% if environment == 'noisy' %} selected {% endif %} value="noisy">Molto Rumoroso</option>
-    <option {% if environment == 'quiet' %} selected {% endif %} value="quiet">Poco Rumoroso</option>
-    <option {% if environment == 'silent' %} selected {% endif %} value="silent">Silenzioso</option>
-    <option {% if environment == 'other' %} selected {% endif %} value="other">Altro</option>
-</select>
-
-<br>
-<br>
-<br>
-
-
-<br>
-<button class="btn btn-primary" type="button" onclick="sendData()" id="sendDataButton">Invia</button>
-<button class="btn btn-danger" type="button" onclick="cancelAudio()" id="sendDataButton">Annulla</button>
-
-<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+<!-- <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script> -->
+<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 <script>
@@ -124,12 +134,12 @@
         sendDataButton.disabled = true;
 
         if (typeof audioChunks === 'undefined') {
-            alert("You need to record something first!");
+            alert("Devi registrare qualcosa prima di proseguire!");
             return;
         }
 
         if (audioChunks.length == 0) {
-            alert("You need to record something first!")
+            alert("Devi registrare qualcosa prima di proseguire!")
             return
         }
             
@@ -141,14 +151,14 @@
         // check if the user has selected a device
         var device = document.getElementById("device").value;
         if (device == "") {
-            alert("You need to select a device!");
+            alert("Devi selezionare un dispositivo!");
             return;
         }
 
         // check if the user has selected an environment
         var environment = document.getElementById("environment").value;
         if (environment == "") {
-            alert("You need to select an environment!");
+            alert("Devi selezionare un ambiente!");
             return;
         }
 
@@ -174,7 +184,7 @@
             if (response.message == "Done") {
                 window.location.replace("/annotation");
             } else {
-                alert("Error. Please refresh the page.")
+                alert("Si è verificato un errore. Per favore ricarica la pagina.")
             }
 
         });

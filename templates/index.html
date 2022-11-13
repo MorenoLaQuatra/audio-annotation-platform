@@ -1,21 +1,37 @@
 {% extends "layout.html" %} {% block title %} Audio Annotation Tool {% endblock %} {% block body %}
-<br><br>
-<h1>👋 Ciao! </h1>
-<br><br>
 
-<h2> Benvenut* nella nostra piattaforma di annotazione! </h2>
-<br><br>
+<!-- <section class="vh-100" style="background:#D8ECFD !important"> -->
 
-<h4> Questa piattaforma è stata creata per costruire un nuovo dataset di registrazioni vocali in Italiano, </h4>
-<h4> che verrà utilizzato per migliorare i sistemi di Intelligenza Artificiale nel mondo audio. </h4>
-<br><br>
+    <div class="container-fluid" style="background-image: linear-gradient(#57AFFA, #D8ECFD); height: 100%">
+        
+        <br><br>
+        <h1>👋 Ciao! </h1>
+        <br><br>
 
-<br>
-<h5> Effettua il login per cominciare ad annotare! </h5>
-<br>
+        <h2> Benvenut* nella nostra piattaforma di annotazione! </h2>
+        <br><br>
 
-<br>
-<a href="{{url_for('login')}}" class="btn btn-primary">Login</a>
-<br>
+        <h4> Questa piattaforma è stata creata per costruire un nuovo dataset di registrazioni vocali in Italiano, </h4>
+        <h4> che verrà utilizzato per migliorare i sistemi di Intelligenza Artificiale nel mondo audio. </h4>
+        <br><br>
+
+        <br>
+        <h5> Effettua il login per cominciare ad annotare! </h5>
+        <br>
+
+        <br>
+        <a href="{{url_for('login')}}" class="btn btn-primary">Login</a>
+        <br><br>
+
+        <div
+        class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+            <div class="text-white mb-3 mb-md-0">
+            Copyright © 2020. All rights reserved.
+            </div>
+        </div>
+
+    </div>
+
+<!-- </section> -->
 
 {% endblock %}
