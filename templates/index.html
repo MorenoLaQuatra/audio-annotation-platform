@@ -1,13 +1,21 @@
 {% extends "layout.html" %} {% block title %} Audio Annotation Tool {% endblock %} {% block body %}
 <br><br>
-<h1>👋 Ciao! Benvenut* nella nostra piattaforma di annotazione! </h1>
+<h1>👋 Ciao! </h1>
+<br><br>
+
+<h2> Benvenut* nella nostra piattaforma di annotazione! </h2>
+<br><br>
+
+<h4> Questa piattaforma è stata creata per costruire un nuovo dataset di registrazioni vocali in Italiano, </h4>
+<h4> che verrà utilizzato per migliorare i sistemi di Intelligenza Artificiale nel mondo audio. </h4>
+<br><br>
+
 <br>
-<h5>
-    Effettua il login per cominciare ad annotare!
-</h5>
+<h5> Effettua il login per cominciare ad annotare! </h5>
+<br>
 
+<br>
 <a href="{{url_for('login')}}" class="btn btn-primary">Login</a>
-
 <br>
 
 {% endblock %}
