@@ -1,7 +1,7 @@
 {% extends "layout.html" %} {% block title %} Audio Annotation Tool {% endblock %} {% block body %}
 <br>
 
-<a href="{{url_for('dashboard')}}" class="btn btn-primary">📈 Dashboard</a>
+<a href="{{url_for('dashboard')}}" class="btn btn-primary">📈 Crushcotto</a>
 <a href="{{url_for('logout')}}" class="btn btn-primary">❌ Logout</a>
 
 
@@ -14,7 +14,7 @@
 </p>
 
 <br>
-<p>Leggi la frase seguente</p>
+<p>Leggi la seguente frase:</p>
 
 <h4 id="target-sentence">{{utt_text}}</h4>
 
@@ -29,8 +29,8 @@
 <br>
 <br>
 <div id="controls">
-    <button class="btn btn-success" id="startRecording">Start recording</button> &nbsp;&nbsp;
-    <button class="btn btn-danger" id="stopRecording" disabled>Stop recording</button>
+    <button class="btn btn-success" id="startRecording">Inizia a registrare</button> &nbsp;&nbsp;
+    <button class="btn btn-danger" id="stopRecording" disabled>Stoppa la registrazione</button>
 </div>
 
 <hr>
@@ -61,8 +61,8 @@
 
 
 <br>
-<button class="btn btn-primary" type="button" onclick="sendData()" id="sendDataButton">Submit</button>
-<button class="btn btn-danger" type="button" onclick="cancelAudio()" id="sendDataButton">Cancel</button>
+<button class="btn btn-primary" type="button" onclick="sendData()" id="sendDataButton">Invia</button>
+<button class="btn btn-danger" type="button" onclick="cancelAudio()" id="sendDataButton">Annulla</button>
 
 <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
