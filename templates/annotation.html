@@ -3,7 +3,7 @@
 <div class="container-fluid" style="background-image: linear-gradient(#57AFFA, #D8ECFD); height: 100%">
 
     <div class="text-center">
-        <img src="https://raw.githubusercontent.com/MorenoLaQuatra/audio-annotation-platform/main/images/RiTA_logo.png?token=GHSAT0AAAAAABRX5YQ4V5GX33IHR6DG2EACY3RNHQQ" 
+        <img src="https://raw.githubusercontent.com/MorenoLaQuatra/audio-annotation-platform/main/images/RiTA_logo.png?token=GHSAT0AAAAAABRX5YQ4CYSPMAI7UC7WJXRQY3RPC5Q"
         class="img-fluid" alt="RiTA Logo" height="150" width="150">
     </div>
 
@@ -15,10 +15,12 @@
     </div>
 
     <hr>
-    
+
     <p><b>📊 Avanzamento annotazioni: </b>{{num_annotations}} / {{dataset_size}}</p>
 
-    <p><div id="id-sentence">ID della frase corrente: {{utt_id}}</div></p>
+    <p>ID della frase corrente: 
+        <div id="id-sentence">{{utt_id}}</div>
+    </p>
 
     <br>
     <p>Leggi la seguente frase (dando la giusta intonazione):</p>
@@ -67,7 +69,7 @@
     <br><br>
 
     <br>
-    <div 
+    <div
         class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-2 px-2 px-xl-3 bg-primary">
         <div class="text-white mb-3 mb-md-0">
           Copyright © 2022. Tutti i diritti sono riservati.
@@ -76,8 +78,8 @@
 
 </div>
 
-<!-- <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script> -->
-<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
+<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+<!-- <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 <script>
@@ -94,10 +96,12 @@
 
         var options = {
             mimeType: 'audio/webm;codecs=opus'
+            // type: 'audio/webm;codecs=pcm'
         }
 
 
         rec = new MediaRecorder(stream, options);
+        // let recorder = RecordRTC(stream, options);
         rec.ondataavailable = e => {
             audioChunks.push(e.data);
             if (rec.state == "inactive") {
@@ -145,7 +149,7 @@
             alert("Devi registrare qualcosa prima di proseguire!")
             return
         }
-            
+
 
         let blob = new Blob(audioChunks, {
             type: 'audio/webm'
@@ -199,6 +203,7 @@
         stopRecording.disabled = false;
         audioChunks = [];
         rec.start();
+        // rec.startRecording();
     };
 
     stopRecording.onclick = e => {
@@ -206,6 +211,7 @@
         startRecording.disabled = false;
         stopRecording.disabled = true;
         rec.stop();
+        // rec.stopRecording();
     };
 
     function cancelAudio() {
