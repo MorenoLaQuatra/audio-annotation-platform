@@ -20,7 +20,8 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 
 from datetime import datetime
-
+import librosa
+import soundfile as sf
 
 
 '''
@@ -219,8 +220,9 @@ def annotation():
     )
 
 
-def convert_webm_to_wav(file, filename):
-    command = ['ffmpeg', '-y', '-i', file, '-acodec', 'pcm_s16le', '-ac', '1', '-ar', '16000', filename]
+def convert_to_wav(file, filename):
+    # command = ['ffmpeg', '-y', '-i', file, '-acodec', 'pcm_s16le', '-ac', '1', '-ar', '16000', filename]
+    command = ['ffmpeg', '-y', '-i', file, '-ar', '16000', filename]
     subprocess.run(command, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
 @app.route("/submit", methods=['GET', 'POST'])
@@ -238,10 +240,19 @@ def submit():
 
     print (f"Device: {device} - Environment: {environment}")
 
-    webm_filename = f"{args.audio_folder}/{utt_id}.webm"
+    extension = request.form.get("mimeType").split("/")[-1]
+
+    webm_filename = f"{args.audio_folder}/{utt_id}." + extension
     wav_filename  = f"{args.audio_folder}/{utt_id}.wav"
     audio_file.save(webm_filename)
-    convert_webm_to_wav(webm_filename, filename=wav_filename)
+    # use librosa to convert to wav
+    # open the file with librosa
+    y, sr = librosa.load(webm_filename, sr=16000)
+    # save the file with soundfile
+    sf.write(wav_filename, y, sr)
+
+
+    #convert_to_wav(webm_filename, filename=wav_filename)
 
     # query the database for the current user
     user = User.query.filter_by(username=current_user.username).first()

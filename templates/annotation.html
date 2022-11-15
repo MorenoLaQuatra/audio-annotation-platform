@@ -16,13 +16,12 @@
 
     <hr>
 
-    <p><b>📊 Avanzamento annotazioni: </b>{{num_annotations}} / {{dataset_size}}</p>
+    <p> <b> 📊 Avanzamento annotazioni: </b> {{num_annotations}} / {{dataset_size}} </p>
 
-    <p>ID della frase corrente: 
-        <div id="id-sentence">{{utt_id}}</div>
-    </p>
+    <p>ID della frase corrente: <div id="id-sentence">{{utt_id}}</div> </p>
 
     <br>
+
     <p>Leggi la seguente frase (dando la giusta intonazione):</p>
 
     <h4 id="target-sentence">{{utt_text}}</h4>
@@ -83,6 +82,19 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 <script>
+
+    var ua = window.navigator.userAgent;
+    var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
+    // var webkit = !!ua.match(/WebKit/i);
+    // var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
+
+    if (iOS) { mimeType = 'audio/mp4'; } else { mimeType = 'audio/webm'; }
+
+    // mimeType = 'audio/webm';
+    // if (!MediaRecorder.isTypeSupported) {
+    //     mimeType = 'audio/mp4';
+    // }
+
     navigator
         .mediaDevices
         .getUserMedia({
@@ -95,19 +107,24 @@
     function handlerFunction(stream) {
 
         var options = {
-            mimeType: 'audio/webm;codecs=opus'
+            mimeType: mimeType
             // type: 'audio/webm;codecs=pcm'
         }
 
 
         rec = new MediaRecorder(stream, options);
-        // let recorder = RecordRTC(stream, options);
+        // let rec = RecordRTC(stream, options);
+
         rec.ondataavailable = e => {
             audioChunks.push(e.data);
+
             if (rec.state == "inactive") {
+
                 let blob = new Blob(audioChunks, {
-                    type: 'audio/webm'
+                    type: mimeType
+                    // type: 'audio/webm'
                 });
+                
                 var url = URL.createObjectURL(blob);
 
                 var div = document.getElementById('audio-div');
@@ -150,7 +167,6 @@
             return
         }
 
-
         let blob = new Blob(audioChunks, {
             type: 'audio/webm'
         });
@@ -174,9 +190,10 @@
         form.append('utt_id', document.getElementById("id-sentence").innerText);
         form.append('device', document.getElementById("device").value);
         form.append('environment', document.getElementById("environment").value);
+        form.append('mimeType', mimeType);
         console.log(blob)
 
-        //Chrome inspector shows that the post data includes a file and a title.
+        // Chrome inspector shows that the post data includes a file and a title.
         $.ajax({
             type: 'POST',
             url: '/submit',
@@ -223,4 +240,5 @@
 
     }
 </script>
+
 {% endblock %}
