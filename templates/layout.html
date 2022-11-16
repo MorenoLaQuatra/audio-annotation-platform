@@ -7,6 +7,31 @@
         href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" 
         integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" 
         crossorigin="anonymous">
+    <style>
+        .cookie-banner {
+            position: fixed;
+            bottom: 40px;
+            left: 10%;
+          right: 10%;
+          width: 80%;
+          padding: 5px 14px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background-color: #eee;
+          border-radius: 5px;
+          box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+        }
+        
+        .close {
+          height: 20px;
+          background-color: #777;
+          border: none;
+          color: black;
+          border-radius: 2px;
+          cursor: pointer;
+        }        
+    </style>
     <!-- Add custom CSS 
     <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
     -->
@@ -15,5 +40,26 @@
 <body>
     <main role="main" class="container-fluid">
         {% block body %} {% endblock %}
+        {% if cookies_check() %}
+            {# then user has already consented so no requirement for consent banner #}
+        {% else %}
+            {# show a cookie consent banner #}
+            <div class="cookie-banner" style="display: none">
+                <button class="close">&times;</button>
+                <p>Usando la piattaforma accetti la nostra <a href=’insert link’>politica sui cookies</a></p>
+            </div>            
+            <script>
+                if(localStorage.getItem('cookieSeen') != 'shown'){
+                    document.getElementsByClassName('cookie-banner')[0].style.display = 'block';
+                }
+                
+                var close_banner = function () {
+                    document.getElementsByClassName('cookie-banner')[0].style.display = 'none';
+                    localStorage.setItem('cookieSeen','shown')
+                };
+                document.getElementsByClassName('close')[0].addEventListener('click', close_banner);
+
+            </script>
+        {% endif %}
     </main>
 </body>

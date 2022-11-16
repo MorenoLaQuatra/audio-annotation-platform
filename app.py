@@ -109,8 +109,6 @@ class VerificationEntry(db.Model):
     score = db.Column(db.Integer, unique=False, nullable=False)
     verification_timestamp = db.Column(db.String(50), unique=False, nullable=False)
 
-# ADD TABLE FOR VERIFICATION LOG
-
 '''
 class RegisterForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=50)], render_kw={"placeholder": "Username"})
@@ -140,6 +138,17 @@ class LoginForm(FlaskForm):
 @app.route("/")
 def home():
     return render_template("index.html")
+
+@app.context_processor
+def inject_template_scope():
+    injections = dict()
+
+    def cookies_check():
+        value = request.cookies.get('cookie_consent')
+        return value == 'true'
+    injections.update(cookies_check=cookies_check)
+
+    return injections
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -241,6 +250,10 @@ def submit():
     print (f"Device: {device} - Environment: {environment}")
 
     extension = request.form.get("mimeType").split("/")[-1]
+
+    if extension == "aac":
+        extension = "m4a"
+    
 
     webm_filename = f"{args.audio_folder}/{utt_id}." + extension
     wav_filename  = f"{args.audio_folder}/{utt_id}.wav"
