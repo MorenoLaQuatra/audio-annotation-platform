@@ -22,78 +22,73 @@
     Se non hai ancora un account, puoi registrarti <a href="SIGNUP_GOOGLE_FORM">qui</a>.
 </p> -->
 
-<!-- <section class="vh-100" style="background:#D8ECFD !important"> -->
-  <div class="container-fluid" style="background-image: linear-gradient(#57AFFA, #D8ECFD); height: 100%">
 
-    <div class="text-center">
-      <img src="audio_files/static/images/RiTA_logo.png" class="img-fluid" alt="RiTA Logo" height="150" width="150">
+<div class="container-fluid" style="background-image: linear-gradient(#57AFFA, #D8ECFD); height: 100">
+
+  <div class="text-center">
+    <img src="audio_files/static/images/RiTA_logo.png" class="img-fluid" alt="RiTA Logo" height="150" width="150">
+  </div>
+
+  <br>
+  <h2 class="text-center fw-bold">Benvenute e benvenuti nella nostra piattaforma di annotazione! </h2>
+  <br>
+
+  <div class="row d-flex justify-content-center align-items-center">
+    
+    <div class="col-md-9 col-lg-6 col-xl-5">
+      <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+        class="img-fluid" alt="Sample image">
     </div>
 
-    <br>
-    <h2 class="text-center fw-bold">Benvenute e benvenuti nella nostra piattaforma di annotazione! </h2>
-    <br>
+    <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
 
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      
-      <div class="col-md-9 col-lg-6 col-xl-5">
-        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-          class="img-fluid" alt="Sample image">
-      </div>
+      <h3 class="text-center fw-bold">Inserisci username e password </h3>
 
-      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+      <form method="POST" action="">
+      {{ form.hidden_tag() }}
 
-        <h3 class="text-center fw-bold">Inserisci username e password </h3>
+        <!-- Email input -->          
+        <div class="form-control-lg">
+          <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+          {{ form.username }}
+        </div>
 
-        <form method="POST" action="">
-        {{ form.hidden_tag() }}
+        <!-- Password input -->
+        <div class="form-control-lg">
+          <!-- <i class="fas fa-lock fa-lg me-3 fa-fw"></i> -->
+          {{ form.password }}
+        </div>
 
-          <!-- Email input -->          
-          <div class="form-control-lg">
-            <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-            {{ form.username }}
-          </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <a href="#!" class="text-body">Password dimenticata?</a>
+        </div>
 
-          <!-- Password input -->
-          <div class="form-control-lg">
-            <!-- <i class="fas fa-lock fa-lg me-3 fa-fw"></i> -->
-            {{ form.password }}
-          </div>
+        <div class="text-center text-lg-start mt-4 pt-2">
+          <button class="btn btn-primary btn-lg btn-block" style="background-color: #3b5998" 
+            type="submit">Login</button>
 
-          <div class="d-flex justify-content-between align-items-center">
-            <a href="#!" class="text-body">Password dimenticata?</a>
-          </div>
+            <!-- <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+              {{ form.submit }}
+            </div> -->
+          <p class="small fw-bold mt-2 pt-1 mb-0">Non hai un account? <a href="https://docs.google.com/forms/d/e/1FAIpQLSfeVxMlTRIM4kFPmfuQWBh9m7-Q2MmeD3Z6mPWeC_gZVBc7og/viewform"
+              class="link-danger"> Registrati qui </a></p>
+        </div>
 
-          <div class="text-center text-lg-start mt-4 pt-2">
-            <button class="btn btn-primary btn-lg btn-block" style="background-color: #3b5998" 
-              type="submit">Login</button>
+      </form>
 
-              <!-- <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                {{ form.submit }}
-              </div> -->
-            <p class="small fw-bold mt-2 pt-1 mb-0">Non hai un account? <a href="https://docs.google.com/forms/d/e/1FAIpQLSfeVxMlTRIM4kFPmfuQWBh9m7-Q2MmeD3Z6mPWeC_gZVBc7og/viewform"
-                class="link-danger"> Registrati qui </a></p>
-          </div>
-
-        </form>
-
-      </div>
-
-    </div>
-
-    <br><br><br>
-
-    <div
-      class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-2 px-2 px-xl-3 bg-primary">
-      <div class="text-white mb-3 mb-md-0">
-        Copyright © 2022. Tutti i diritti sono riservati.
-      </div>
     </div>
 
   </div>
 
+  <br><br><br>
 
+  <div
+    class="d-flex flex-column flex-md-row py-2 px-2 px-xl-3 bg-primary">
+    <div class="text-white mb-3 mb-md-0"> Copyright © 2022 RiTA. Tutti i diritti sono riservati.</div>
+  </div>
 
-<!-- </section> -->
+</div>
+
 
 
 {% endblock %}
