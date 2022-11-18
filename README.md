@@ -15,7 +15,11 @@ sudo apt install ffmpeg
 ## Usage
 ```bash
 # Initialize the database (only needs to be done once)
-python init_user.py
+python init_database.py --data_path <path to data directory> \
+--users_table_name <name of users table> \
+--dataset_table_name <name of dataset table> \
+--verification_table_name <name of verification table> \
+--database_name <name of database>
 
 # Add a user (only needs to be done each time a new user is added)
 python add_user.py --username <username> --password <password>
@@ -47,7 +51,7 @@ NB. There is no tracking of the user who verified an annotation. This is a featu
 
 ### Parameters
 
-#### init_dataset.py
+#### init_database.py
 - `--data_path`: path to the json data
 - `--database_name`: name of the database (default: `database`)
 - `--verification_table_name`: name of the table containing the verification logs (default: `verifications`)
@@ -81,12 +85,29 @@ The final table in the database will look like this:
 | 1  | train     | Text of the utterance   | 1.wav | 1       | 0 | 2022-09-01 12:00:00 |
 | 2  | train     | Text of the utterance   | 2.wav | 2       | 0 | 2022-09-01 12:00:00 |
 
+## Verification
+
 Herafter a description of the fields:
-- `id`: id of the entry in the original json file
-- `partition`: partition of the entry in the original json file (train, dev, test)
-- `utt`: utterance of the entry (e.g., "Accendi la luce")
-- `path`: path to the audio file
-- `speaker`: id of the user who annotated the audio file
+- `id`: id of the entry for the verification table
+- `utt_id`: id of the utterance in the dataset table
+- `verifier_id`: id of the user who verified the utterance (from the users table)
+- `score`: score of the verification (1, -1)
+- `verification_timestamp`: timestamp of the verification
+
+
+The information about the user is stored in the `verifications` table. The final table in the database will look like this:
+
+| id | utt_id | verifier_id | score | verification_timestamp |
+|----|--------|-------------|-------|------------------------|
+| 1  | 1      | 1           | 1     | 2022-09-01 12:00:00    |
+| 2  | 2      | 2           | -1    | 2022-09-01 12:00:00    |
+
+## Users
+
+Herafter a description of the fields:
+- `id`: id of the entry for the users table
+- `username`: username of the user
+- `password`: password of the user
 
 The information about the user is stored in the `users` table:
 
@@ -95,4 +116,4 @@ The information about the user is stored in the `users` table:
 | 1  | user1    | BCrypted |
 | 2  | user2    | BCrypted |
 
-The username and password are currently the only information stored in the table.
+NB: The username and password (crypted) are currently the only information stored in the table.
