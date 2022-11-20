@@ -129,4 +129,10 @@ dmypy.json
 .pyre/
 
 # application specific folders and files that should not be tracked
-audio_files/
+audio_files/*.wav
+audio_files/*.mp3
+audio_files/*.ogg
+audio_files/*.mp4
+audio_files/*.m4a
+audio_files/*.aac
+audio_files/*.webm

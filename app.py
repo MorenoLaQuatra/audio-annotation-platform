@@ -205,7 +205,8 @@ def annotation():
     user_id = user.id
 
     # Get some data for statistics
-    num_annotations = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None).count()
+    #num_annotations = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None).count()
+    num_annotations = AnnotationEntry.query.filter_by(speaker=user_id).count()
     dataset_size = AnnotationEntry.query.count()
 
     if num_annotations == dataset_size:
@@ -221,7 +222,7 @@ def annotation():
         "annotation.html", 
         username=user_name, 
         num_annotations=num_annotations, 
-        dataset_size=dataset_size, 
+        #dataset_size=dataset_size, 
         utt_id=utt_id, 
         utt_text=utt_text,
         device = request.cookies.get('device'),

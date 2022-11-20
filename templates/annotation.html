@@ -13,11 +13,26 @@
         <a href="{{url_for('logout')}}" class="btn btn-warning">❌ Effettua il Logout</a>
     </div>
 
+    <div id="loader" style="display: none"></div>
+
     <hr>
 
-    <p> <b> 📊 Avanzamento annotazioni: </b> {{num_annotations}} / {{dataset_size}} </p>
+    <p> 📊 Hai annotato {{num_annotations}} file audio fino ad ora. </p>
+    <p> 🛑 L'audio da annotare deve essere compreso tra i 0.5 e i 10 secondi. </p>
+    <p> 
+        Puoi premere <code>barra spaziatrice</code> per iniziare e fermare la registrazione.
+        <br>
+        Puoi premere <code>CTRL o CMD + Invio</code> per inviare la registrazione.
+        <br>
+        Puoi premere <code>P</code> per ascoltare la registrazione.
+        <br>
+        Puoi premere <code>ESC</code> per caricare una nuova frase.
+    </p>
 
-    <p>ID della frase corrente: <div id="id-sentence">{{utt_id}}</div> </p>
+    <p style="display: none">
+        ID della frase corrente: 
+        <div id="id-sentence" style="display: none">{{utt_id}}</div> 
+    </p>
 
     <br>
 
@@ -31,8 +46,6 @@
 
     <br>
 
-    <!-- TODO: check audio length (> 0 < 10 ?) -->
-
     <div id="controls">
         <button class="btn btn-success" id="startRecording">Inizia a registrare</button> &nbsp;&nbsp;
         <button class="btn btn-danger" id="stopRecording" disabled>Interrompi la registrazione</button>
@@ -43,9 +56,9 @@
     <p>Seleziona il tipo di dispositivo che stai usando:</p>
     <select name="device" id="device" required>
         <option {% if device is none %} selected {% endif %} value=""></option>
-        <option {% if device == 'computer' %} selected {% endif %} value="computer">Computer</option>
+        <option {% if device == 'computer' %} selected {% endif %} value="computer">Microfono del computer</option>
+        <option {% if device == 'phone' %} selected {% endif %} value="phone">Microfono dello smartphone</option>
         <option {% if device == 'headphones' %} selected {% endif %} value="headphones">Cuffie</option>
-        <option {% if device == 'phone' %} selected {% endif %} value="phone">Telefono</option>
         <option {% if device == 'other' %} selected {% endif %} value="other">Altro</option>
     </select>
 
@@ -54,9 +67,9 @@
     <p>Descrivi il tipo di ambiente in cui stai registrando:</p>
     <select name="environment" id="environment" required>
         <option {% if environment is none %} selected {% endif %} value=""></option>
-        <option {% if environment == 'noisy' %} selected {% endif %} value="noisy">Molto Rumoroso</option>
-        <option {% if environment == 'quiet' %} selected {% endif %} value="quiet">Poco Rumoroso</option>
-        <option {% if environment == 'silent' %} selected {% endif %} value="silent">Silenzioso</option>
+        <option {% if environment == 'noisy' %} selected {% endif %} value="noisy">Molto Rumoroso (es. strada, aeroporto, stazione)</option>
+        <option {% if environment == 'quiet' %} selected {% endif %} value="quiet">Poco Rumoroso (es. interno casa, ufficio)</option>
+        <option {% if environment == 'silent' %} selected {% endif %} value="silent">Silenzioso (es. stanza chiusa)</option>
         <option {% if environment == 'other' %} selected {% endif %} value="other">Altro</option>
     </select>
 
@@ -93,6 +106,8 @@
     // if (!MediaRecorder.isTypeSupported) {
     //     mimeType = 'audio/mp4';
     // }
+
+    
 
     navigator
         .mediaDevices
@@ -143,12 +158,25 @@
 
                 source.setAttribute('src', url);
                 source.setAttribute('type', 'audio/mpeg');
+                container.setAttribute("preload", "metadata")
+                // solve the problem of duration infinity
+                
+                // play the audio muted
+                /*
+                container.muted = true;
+                container.play();
+
+                // when play is finished, unmute the audio
+                container.onended = function() {
+                    container.muted = false;
+                    container.currentTime = 0;
+                };
+                */
 
                 console.log({
                     src: source.getAttribute('src'),
                     type: source.getAttribute('type'),
                 });
-                //sendData(blob);
             }
         }
     }
@@ -184,13 +212,27 @@
             return;
         }
 
-        // check audio length (max 10 seconds, min 0.5 seconds)
         var audio = document.getElementById("audio-container");
+        
+        // check audio length (max 10 seconds, min 0.5 seconds)
+        /*
         if (audio.duration > 10 || audio.duration < 0.5) {
             alert("La durata del file audio deve essere compresa tra 0.5 e 10 secondi!");
             return;
         }
+        */
 
+        JsLoadingOverlay.show({
+            'overlayBackgroundColor': '#666666',
+            'overlayOpacity': 0.6,
+            'spinnerIcon': 'ball-atom',
+            'spinnerColor': '#000',
+            'spinnerSize': '2x',
+            'overlayIDName': 'overlay',
+            'spinnerIDName': 'spinner',
+            'spinnerZIndex':99999,
+            'overlayZIndex':99998
+          });
 
         var form = new FormData();
         form.append('file', blob, 'file');
@@ -213,8 +255,10 @@
             startRecording.disabled = true;
             stopRecording.disabled = true;
             if (response.message == "Done") {
+                JsLoadingOverlay.hide();
                 window.location.replace("/annotation");
             } else {
+                JsLoadingOverlay.hide();
                 alert("Si è verificato un errore. Per favore ricarica la pagina.")
             }
 
@@ -246,6 +290,52 @@
         audioChunks = [];
 
     }
+
+    // on CMD+Enter or CTRL+Enter send data
+    document.addEventListener('keydown', function(event) {
+        if (event.keyCode == 13 && (event.metaKey || event.ctrlKey)) {
+            sendData();
+        }
+    });
+    
+    document.body.onkeyup = function(e) {
+        
+        // start or stop recording with spacebar
+        if (e.keyCode == 32) {
+            if (document.getElementById("startRecording").disabled == false) {
+                startRecording.click();
+            } else {
+                stopRecording.click();
+            }
+        }
+
+        // play audio with p
+        if (e.keyCode == 80 || e.keyCode == 112) {
+            var audio = document.getElementById("audio-container");
+            if (audio != null) {
+                audio.play();
+            } else {
+                alert("Non hai registrato alcun audio!");
+            }
+        }
+
+        // skip sentence with ESC
+        if (e.keyCode == 27) {
+            JsLoadingOverlay.show({
+                'overlayBackgroundColor': '#666666',
+                'overlayOpacity': 0.6,
+                'spinnerIcon': 'ball-atom',
+                'spinnerColor': '#000',
+                'spinnerSize': '2x',
+                'overlayIDName': 'overlay',
+                'spinnerIDName': 'spinner',
+                'spinnerZIndex':99999,
+                'overlayZIndex':99998
+              });
+            window.location.replace("/annotation");
+        }
+    }
+
 </script>
 
 {% endblock %}
