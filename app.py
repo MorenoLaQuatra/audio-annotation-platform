@@ -368,6 +368,16 @@ def verify():
     response = make_response(jsonify(data), 201) 
     return response
 
+@app.route("/terms", methods=['GET', 'POST'])
+def terms():
+    return render_template("terms.html")
+
+@app.route("/privacy", methods=['GET', 'POST'])
+def privacy():
+    return render_template("privacy.html")
+
+
+
 '''
 ---------------------------------------------------
     Running the app
