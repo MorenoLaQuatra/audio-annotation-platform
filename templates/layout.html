@@ -47,7 +47,7 @@
             {# show a cookie consent banner #}
             <div class="cookie-banner" style="display: none">
                 <button class="close">&times;</button>
-                <p>Usando la piattaforma accetti la nostra <a href=’insert link’>politica sui cookies</a></p>
+                <p>Usando la piattaforma accetti la nostra <a href='{{ url_for('privacy') }}'>politica sui cookies</a></p>
             </div>            
             <script>
                 if(localStorage.getItem('cookieSeen') != 'shown'){
