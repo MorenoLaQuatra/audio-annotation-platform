@@ -139,6 +139,12 @@ class LoginForm(FlaskForm):
 def home():
     return render_template("index.html")
 
+@app.route("/tutorial", methods=['GET', 'POST'])
+# serve the pdf file tutorial.pdf in static folder
+def tutorial():
+    # use url_for to get the path of the static folder
+    return send_from_directory(app.static_folder, 'tutorial.pdf')
+
 @app.context_processor
 def inject_template_scope():
     injections = dict()
@@ -376,10 +382,8 @@ def terms():
 def privacy():
     return render_template("privacy.html")
 
-@app.route("/tutorial", methods=['GET', 'POST'])
-# serve the pdf file tutorial.pdf in static folder
-def tutorial():
-    return send_from_directory('static', 'tutorial.pdf')
+
+    
 
 
 
