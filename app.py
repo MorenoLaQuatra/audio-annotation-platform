@@ -7,7 +7,7 @@ import subprocess
 import random
 
 from flask import Flask
-from flask import render_template, url_for, redirect, request, make_response, jsonify
+from flask import render_template, url_for, redirect, request, make_response, jsonify, send_from_directory
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -377,8 +377,10 @@ def privacy():
     return render_template("privacy.html")
 
 @app.route("/tutorial", methods=['GET', 'POST'])
+# serve the pdf file tutorial.pdf in static folder
 def tutorial():
-    return render_template("tutorial.html")
+    return send_from_directory('static', 'tutorial.pdf')
+
 
 
 '''
