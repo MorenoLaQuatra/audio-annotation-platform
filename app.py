@@ -143,7 +143,8 @@ def home():
 # serve the pdf file tutorial.pdf in static folder
 def tutorial():
     # use url_for to get the path of the static folder
-    return send_from_directory(app.static_folder, 'tutorial.pdf')
+    print(app.static_folder + '/static/tutorial.pdf')
+    return send_from_directory(app.static_folder + '/static/', 'tutorial.pdf')
 
 @app.context_processor
 def inject_template_scope():
