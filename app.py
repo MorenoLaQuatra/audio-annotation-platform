@@ -378,7 +378,7 @@ def privacy():
 
 @app.route("/tutorial", methods=['GET', 'POST'])
 def tutorial():
-    return render_template("privacy.html")
+    return render_template("tutorial.html")
 
 
 '''
