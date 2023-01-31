@@ -136,3 +136,8 @@ audio_files/*.mp4
 audio_files/*.m4a
 audio_files/*.aac
 audio_files/*.webm
+
+
+get_info_to_merge.py
+merge_given_username.py
+additional_annotations.json
