@@ -264,9 +264,9 @@ def submit():
     wav_filename  = f"{args.audio_folder}/{utt_id}.wav"
     audio_file.save(webm_filename)
 
-    if extension == "aac":
+    if extension == "mp4":
         # use pydub to convert to wav
-        sound = AudioSegment.from_file(webm_filename, format="aac")
+        sound = AudioSegment.from_file(webm_filename, format="mp4")
         sound.export(wav_filename, format="wav")
     else:
         # use librosa to convert to wav
