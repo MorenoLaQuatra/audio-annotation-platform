@@ -239,7 +239,7 @@ def annotation():
 
 def convert_to_wav(file, filename):
     # command = ['ffmpeg', '-y', '-i', file, '-acodec', 'pcm_s16le', '-ac', '1', '-ar', '16000', filename]
-    command = ['ffmpeg', '-y', '-i', file, '-ar', '16000', filename]
+    command = ['ffmpeg', '-y', '-af aresample=async=1', '-i', file, '-ar', '16000', filename]
     subprocess.run(command, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
 @app.route("/submit", methods=['GET', 'POST'])
