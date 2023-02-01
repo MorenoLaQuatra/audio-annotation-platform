@@ -44,7 +44,7 @@
 
     <div id="audio-div"></div>
 
-    <!--<h1>{{utt_id}}</h1>-->
+    <h1>{{utt_id}}</h1>
 
     <br>
 
@@ -102,7 +102,7 @@
     // var webkit = !!ua.match(/WebKit/i);
     // var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
 
-    if (iOS) { mimeType = 'audio/mp4'; } else { mimeType = 'audio/webm'; }
+    if (iOS) { mimeType = 'audio/aac'; } else { mimeType = 'audio/webm'; }
 
     // mimeType = 'audio/webm';
     // if (!MediaRecorder.isTypeSupported) {
