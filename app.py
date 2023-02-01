@@ -22,6 +22,7 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 import librosa
 import soundfile as sf
+from pydub import AudioSegment
 
 
 '''
@@ -259,18 +260,22 @@ def submit():
 
     extension = request.form.get("mimeType").split("/")[-1]
 
-    if extension == "aac":
-        extension = "m4a"
     
 
     webm_filename = f"{args.audio_folder}/{utt_id}." + extension
     wav_filename  = f"{args.audio_folder}/{utt_id}.wav"
     audio_file.save(webm_filename)
-    # use librosa to convert to wav
-    # open the file with librosa
-    y, sr = librosa.load(webm_filename, sr=16000)
-    # save the file with soundfile
-    sf.write(wav_filename, y, sr)
+
+    if extension == "mp4":
+        # use pydub to convert to wav
+        sound = AudioSegment.from_file(webm_filename, format="mp4")
+        sound.export(wav_filename, format="wav")
+    else:
+        # use librosa to convert to wav
+        # open the file with librosa
+        y, sr = librosa.load(webm_filename, sr=16000)
+        # save the file with soundfile
+        sf.write(wav_filename, y, sr)
 
 
     #convert_to_wav(webm_filename, filename=wav_filename)
