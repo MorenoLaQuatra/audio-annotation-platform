@@ -317,8 +317,12 @@ def verification():
     # Get random utterance to verify
     possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None, AnnotationEntry.verification_score == 0).all()
     if len(possible_utterances) == 0:
+        # get the minimum verification score greater than 0
+        min_verification_score = db.session.query(func.min(AnnotationEntry.verification_score)).filter(AnnotationEntry.speaker!=None, AnnotationEntry.verification_score > 0).scalar()
+        possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None, AnnotationEntry.verification_score == min_verification_score).all()
+
         # if no utterance is "not verified" or with a score of 0, then choose a random one
-        possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None).all()
+        # possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None).all()
 
     if len(possible_utterances) == 0:
         # if no utterance available, then goes to the done page
