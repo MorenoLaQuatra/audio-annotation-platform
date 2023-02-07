@@ -326,6 +326,14 @@ def verification():
         # get all utterances with that score
         possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None, AnnotationEntry.verification_score == min_verification_score).all()
 
+        # get the id of the verification done by the current user
+        user_verification_ids = [utt.utt_id for utt in VerificationEntry.query.filter_by(verifier_id=user_id).all()]
+        # remove all utterances that have been verified by the current user
+
+        new_possible_utterances = [utt for utt in possible_utterances if utt.utt_id not in user_verification_ids]
+        if len(new_possible_utterances) > 0:
+            possible_utterances = new_possible_utterances
+
         # if no utterance is "not verified" or with a score of 0, then choose a random one
         # possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None).all()
 
