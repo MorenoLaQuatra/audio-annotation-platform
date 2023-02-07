@@ -1,0 +1,46 @@
+{% extends "layout.html" %} {% block title %} Login page {% endblock %} {% block body %}
+
+<div class="container-fluid" 
+    style="background-image: linear-gradient(#57AFFA, #D8ECFD); height: 100">
+
+    <div class="text-center">
+        <img src="audio_files/static/images/RiTA_logo.png" class="img-fluid" alt="RiTA Logo" height="150" width="150">
+    </div>
+    
+    <br><br>
+    
+    <div class="d-flex justify-content-between">
+        <a href="{{url_for('dashboard')}}" class="btn btn-info">📈 Torna alla homepage</a>
+        <a href="{{url_for('logout')}}" class="btn btn-warning">❌ Effettua il Logout</a>
+    </div>
+
+    <br><br>
+
+    <h1 class="text-center">🎉 Grazie!</h1>
+
+    <br><br><br>
+
+    <h3 class="text-center"> Al momento non ci sono altre annotazioni da verificare. </h3>
+
+    <br><br>
+
+    <h5 class="text-center"> 
+        Grazie per l'aiuto, potete tornare più tardi per verificare altre annotazioni o 
+        tornare alla pagina principale per annotare nuovi file audio! 
+    </h5>
+
+    <br><br>
+    <br><br>
+    <br><br>
+    <br><br>
+    <br><br>
+    <br><br>
+
+    <div
+        class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-2 px-2 px-xl-3 bg-primary">
+        <div class="text-white mb-3 mb-md-0"> Copyright © 2022 RiTA. Tutti i diritti sono riservati.</div>
+    </div>
+
+</div>
+
+{% endblock %}

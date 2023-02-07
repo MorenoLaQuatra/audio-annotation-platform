@@ -333,13 +333,16 @@ def verification():
         new_possible_utterances = [utt for utt in possible_utterances if utt.id not in user_verification_ids]
         if len(new_possible_utterances) > 0:
             possible_utterances = new_possible_utterances
+        else:
+            # if no utterance available, then goes to the done page
+            return render_template("done_verifications.html")
 
         # if no utterance is "not verified" or with a score of 0, then choose a random one
         # possible_utterances = AnnotationEntry.query.filter(AnnotationEntry.speaker!=None).all()
 
     if len(possible_utterances) == 0:
         # if no utterance available, then goes to the done page
-        return render_template("done.html")
+        return render_template("done_verifications.html")
 
     next_utt = random.choice(possible_utterances)
     utt_id = next_utt.id
