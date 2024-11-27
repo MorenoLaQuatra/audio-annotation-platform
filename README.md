@@ -117,3 +117,19 @@ The information about the user is stored in the `users` table:
 | 2  | user2    | BCrypted |
 
 NB: The username and password (crypted) are currently the only information stored in the table.
+
+## Why this platform?
+
+This platform has been originally created for the ITALIC data collection phase. Bibtex of the published paper for the Italian Intent Classification dataset below:
+
+```bibtex
+@inproceedings{koudounas23_interspeech,
+  title     = {ITALIC: An Italian Intent Classification Dataset},
+  author    = {Alkis Koudounas and Moreno {La Quatra} and Lorenzo Vaiani and Luca Colomba and Giuseppe Attanasio and Eliana Pastor and Luca Cagliero and Elena Baralis},
+  year      = {2023},
+  booktitle = {INTERSPEECH 2023},
+  pages     = {2153--2157},
+  doi       = {10.21437/Interspeech.2023-1980},
+  issn      = {2958-1796},
+}
+```
